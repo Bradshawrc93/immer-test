@@ -21,45 +21,39 @@
             <div class="setup-form">
                 <div class="input-group">
                     <label for="num-players">Number of Players:</label>
-                    <div class="quick-select">
-                        <button type="button" class="quick-btn" data-players="4">4</button>
-                        <button type="button" class="quick-btn" data-players="5">5</button>
-                        <button type="button" class="quick-btn" data-players="6">6</button>
-                        <button type="button" class="quick-btn" data-players="7">7</button>
-                        <button type="button" class="quick-btn" data-players="8">8</button>
-                        <button type="button" class="quick-btn" data-players="9">9</button>
-                        <button type="button" class="quick-btn" data-players="10">10</button>
+                    <div class="counter-control">
+                        <button type="button" class="counter-btn" id="players-minus">−</button>
+                        <div class="counter-display" id="players-display">4</div>
+                        <button type="button" class="counter-btn" id="players-plus">+</button>
                     </div>
-                    <input type="number" id="num-players" min="3" max="10" value="4">
+                    <input type="hidden" id="num-players" value="4">
                 </div>
                 <div class="input-group">
                     <label for="num-imposters">Number of Imposters:</label>
-                    <div class="quick-select">
-                        <button type="button" class="quick-btn" data-imposters="1">1</button>
-                        <button type="button" class="quick-btn" data-imposters="2">2</button>
-                        <button type="button" class="quick-btn" data-imposters="3">3</button>
-                        <button type="button" class="quick-btn" data-imposters="4">4</button>
-                        <button type="button" class="quick-btn" data-imposters="5">5</button>
+                    <div class="counter-control">
+                        <button type="button" class="counter-btn" id="imposters-minus">−</button>
+                        <div class="counter-display" id="imposters-display">1</div>
+                        <button type="button" class="counter-btn" id="imposters-plus">+</button>
                     </div>
-                    <input type="number" id="num-imposters" min="1" max="5" value="1">
+                    <input type="hidden" id="num-imposters" value="1">
                 </div>
-                <div class="input-group">
-                    <label for="category-select">Category:</label>
-                    <select id="category-select">
-                        <option value="random">Random Category</option>
-                        <option value="Animals">Animals</option>
-                        <option value="Food & Drinks">Food & Drinks</option>
-                        <option value="Places & Buildings">Places & Buildings</option>
-                        <option value="Nature & Weather">Nature & Weather</option>
-                        <option value="Transportation">Transportation</option>
-                        <option value="Entertainment & Arts">Entertainment & Arts</option>
-                        <option value="Technology & Science">Technology & Science</option>
-                        <option value="Sports & Activities">Sports & Activities</option>
-                        <option value="Objects & Tools">Objects & Tools</option>
-                        <option value="Clothing & Fashion">Clothing & Fashion</option>
-                        <option value="Emotions & Concepts">Emotions & Concepts</option>
-                        <option value="Professions">Professions</option>
-                        <option value="Miscellaneous">Miscellaneous</option>
+                <div class="input-group category-group">
+                    <label for="category-select">Choose Category:</label>
+                    <select id="category-select" class="category-select">
+                        <option value="random">🎲 Random Category</option>
+                        <option value="Animals">🐘 Animals</option>
+                        <option value="Food & Drinks">🍕 Food & Drinks</option>
+                        <option value="Places & Buildings">🏰 Places & Buildings</option>
+                        <option value="Nature & Weather">🌊 Nature & Weather</option>
+                        <option value="Transportation">✈️ Transportation</option>
+                        <option value="Entertainment & Arts">🎭 Entertainment & Arts</option>
+                        <option value="Technology & Science">💻 Technology & Science</option>
+                        <option value="Sports & Activities">⚽ Sports & Activities</option>
+                        <option value="Objects & Tools">💎 Objects & Tools</option>
+                        <option value="Clothing & Fashion">👕 Clothing & Fashion</option>
+                        <option value="Emotions & Concepts">😊 Emotions & Concepts</option>
+                        <option value="Professions">👩‍⚕️ Professions</option>
+                        <option value="Miscellaneous">✨ Miscellaneous</option>
                     </select>
                 </div>
                 <button id="begin-game" class="btn btn-primary">Begin Game</button>
@@ -76,9 +70,9 @@
             </div>
             <div id="role-reveal" class="hidden">
                 <div id="role-container">
-                    <div id="role-display"></div>
-                    <div id="tap-to-reveal" class="blur-overlay">
-                        <p>Tap to Reveal</p>
+                    <div id="role-display" class="hidden"></div>
+                    <div id="tap-to-reveal" class="tap-reveal-box">
+                        <p>👆 Tap to Reveal Your Role</p>
                     </div>
                 </div>
                 <div id="category-display"></div>
@@ -150,6 +144,6 @@
         </div>
     </div>
 
-    <script src="script.js?v=2.1"></script>
+    <script src="script.js?v=2.2"></script>
 </body>
 </html>
