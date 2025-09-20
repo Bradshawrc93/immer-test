@@ -21,11 +21,46 @@
             <div class="setup-form">
                 <div class="input-group">
                     <label for="num-players">Number of Players:</label>
+                    <div class="quick-select">
+                        <button type="button" class="quick-btn" data-players="4">4</button>
+                        <button type="button" class="quick-btn" data-players="5">5</button>
+                        <button type="button" class="quick-btn" data-players="6">6</button>
+                        <button type="button" class="quick-btn" data-players="7">7</button>
+                        <button type="button" class="quick-btn" data-players="8">8</button>
+                        <button type="button" class="quick-btn" data-players="9">9</button>
+                        <button type="button" class="quick-btn" data-players="10">10</button>
+                    </div>
                     <input type="number" id="num-players" min="3" max="10" value="4">
                 </div>
                 <div class="input-group">
                     <label for="num-imposters">Number of Imposters:</label>
-                    <input type="number" id="num-imposters" min="1" max="3" value="1">
+                    <div class="quick-select">
+                        <button type="button" class="quick-btn" data-imposters="1">1</button>
+                        <button type="button" class="quick-btn" data-imposters="2">2</button>
+                        <button type="button" class="quick-btn" data-imposters="3">3</button>
+                        <button type="button" class="quick-btn" data-imposters="4">4</button>
+                        <button type="button" class="quick-btn" data-imposters="5">5</button>
+                    </div>
+                    <input type="number" id="num-imposters" min="1" max="5" value="1">
+                </div>
+                <div class="input-group">
+                    <label for="category-select">Category:</label>
+                    <select id="category-select">
+                        <option value="random">Random Category</option>
+                        <option value="Animals">Animals</option>
+                        <option value="Food & Drinks">Food & Drinks</option>
+                        <option value="Places & Buildings">Places & Buildings</option>
+                        <option value="Nature & Weather">Nature & Weather</option>
+                        <option value="Transportation">Transportation</option>
+                        <option value="Entertainment & Arts">Entertainment & Arts</option>
+                        <option value="Technology & Science">Technology & Science</option>
+                        <option value="Sports & Activities">Sports & Activities</option>
+                        <option value="Objects & Tools">Objects & Tools</option>
+                        <option value="Clothing & Fashion">Clothing & Fashion</option>
+                        <option value="Emotions & Concepts">Emotions & Concepts</option>
+                        <option value="Professions">Professions</option>
+                        <option value="Miscellaneous">Miscellaneous</option>
+                    </select>
                 </div>
                 <button id="begin-game" class="btn btn-primary">Begin Game</button>
                 <button id="back-to-home" class="btn btn-secondary">Back</button>
@@ -40,16 +75,66 @@
                 <button id="view-role" class="btn btn-primary">View</button>
             </div>
             <div id="role-reveal" class="hidden">
-                <div id="role-display"></div>
-                <button id="next-player" class="btn btn-primary">Next Player</button>
+                <div id="role-container">
+                    <div id="role-display"></div>
+                    <div id="tap-to-reveal" class="blur-overlay">
+                        <p>Tap to Reveal</p>
+                    </div>
+                </div>
+                <div id="category-display"></div>
+                <button id="next-player" class="btn btn-primary disabled">Next Player</button>
             </div>
         </div>
 
         <!-- Play Screen -->
         <div id="play-screen" class="screen">
+            <div id="imposter-wins-counter">
+                <p class="wins-display">Imposter Wins: <span id="wins-count">0</span></p>
+            </div>
             <h2>Ready to Play!</h2>
             <p class="instructions">All players have viewed their roles.<br>Now discuss and try to identify the imposters!</p>
-            <button id="start-discussion" class="btn btn-primary">Play</button>
+            <button id="start-discussion" class="btn btn-primary">Start Discussion</button>
+        </div>
+
+        <!-- Voting Screen -->
+        <div id="voting-screen" class="screen">
+            <div id="imposter-wins-counter-voting">
+                <p class="wins-display">Imposter Wins: <span id="wins-count-voting">0</span></p>
+            </div>
+            <h2>Vote Results</h2>
+            <p class="instructions">Who won this round?</p>
+            <button id="imposters-won" class="btn btn-primary">Imposters Won</button>
+            <button id="imposters-found" class="btn btn-secondary">Imposters Were Found</button>
+        </div>
+
+        <!-- Play Again Screen -->
+        <div id="play-again-screen" class="screen">
+            <div id="imposter-wins-counter-again">
+                <p class="wins-display">Imposter Wins: <span id="wins-count-again">0</span></p>
+            </div>
+            <h2>Play Another Round?</h2>
+            <div class="input-group">
+                <label for="category-select-again">Category:</label>
+                <select id="category-select-again">
+                    <option value="random">Random Category</option>
+                    <option value="Animals">Animals</option>
+                    <option value="Food & Drinks">Food & Drinks</option>
+                    <option value="Places & Buildings">Places & Buildings</option>
+                    <option value="Nature & Weather">Nature & Weather</option>
+                    <option value="Transportation">Transportation</option>
+                    <option value="Entertainment & Arts">Entertainment & Arts</option>
+                    <option value="Technology & Science">Technology & Science</option>
+                    <option value="Sports & Activities">Sports & Activities</option>
+                    <option value="Objects & Tools">Objects & Tools</option>
+                    <option value="Clothing & Fashion">Clothing & Fashion</option>
+                    <option value="Emotions & Concepts">Emotions & Concepts</option>
+                    <option value="Professions">Professions</option>
+                    <option value="Miscellaneous">Miscellaneous</option>
+                </select>
+            </div>
+            <p class="instructions">Pass the phone to Player 1</p>
+            <button id="start-new-round" class="btn btn-primary">Start Round</button>
+            <button id="new-game-setup" class="btn btn-secondary">New Game</button>
         </div>
 
         <!-- Game Complete Screen -->
@@ -65,6 +150,6 @@
         </div>
     </div>
 
-    <script src="script.js?v=2.0"></script>
+    <script src="script.js?v=2.1"></script>
 </body>
 </html>
