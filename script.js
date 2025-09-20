@@ -137,6 +137,12 @@ const elements = {
     startGame: document.getElementById('start-game'),
     numPlayers: document.getElementById('num-players'),
     numImposters: document.getElementById('num-imposters'),
+    playersDisplay: document.getElementById('players-display'),
+    impostersDisplay: document.getElementById('imposters-display'),
+    playersMinus: document.getElementById('players-minus'),
+    playersPlus: document.getElementById('players-plus'),
+    impostersMinus: document.getElementById('imposters-minus'),
+    impostersPlus: document.getElementById('imposters-plus'),
     categorySelect: document.getElementById('category-select'),
     beginGame: document.getElementById('begin-game'),
     backToHome: document.getElementById('back-to-home'),
@@ -232,19 +238,19 @@ function showPlayerRole() {
     
     const isImposter = gameState.imposters.includes(gameState.currentPlayer);
     
-    // Set up the role display (word only, no category)
+    // Prepare the role display content but keep it hidden
     if (isImposter) {
         elements.roleDisplay.textContent = 'IMPOSTER';
-        elements.roleDisplay.className = 'imposter';
+        elements.roleDisplay.className = 'imposter hidden';
     } else {
         elements.roleDisplay.textContent = gameState.word;
-        elements.roleDisplay.className = 'word';
+        elements.roleDisplay.className = 'word hidden';
     }
     
     // Set category display (separate from role display)
     elements.categoryDisplay.textContent = `Category: ${gameState.category}`;
     
-    // Show blur overlay and disable next button
+    // Show tap-to-reveal box and disable next button
     elements.tapToReveal.style.display = 'flex';
     elements.nextPlayer.classList.add('disabled');
     
@@ -289,7 +295,13 @@ function updateWinsDisplay() {
 }
 
 function handleTapToReveal() {
+    // Hide the tap-to-reveal box
     elements.tapToReveal.style.display = 'none';
+    
+    // Show the actual role display
+    elements.roleDisplay.classList.remove('hidden');
+    
+    // Enable the next player button
     elements.nextPlayer.classList.remove('disabled');
 }
 
@@ -416,52 +428,48 @@ elements.numImposters.addEventListener('input', () => {
     }
 });
 
-// Quick select button functionality
-document.addEventListener('click', (e) => {
-    // Handle player quick select buttons
-    if (e.target.hasAttribute('data-players')) {
-        const playerCount = parseInt(e.target.getAttribute('data-players'));
-        elements.numPlayers.value = playerCount;
-        gameState.numPlayers = playerCount;
-        
-        // Update active state
-        document.querySelectorAll('[data-players]').forEach(btn => btn.classList.remove('active'));
-        e.target.classList.add('active');
-        
-        // Validate imposters count
-        if (gameState.numImposters >= playerCount) {
-            const newImposters = Math.max(1, playerCount - 1);
-            elements.numImposters.value = newImposters;
-            gameState.numImposters = newImposters;
-            
-            // Update imposter button active state
-            document.querySelectorAll('[data-imposters]').forEach(btn => btn.classList.remove('active'));
-            document.querySelector(`[data-imposters="${newImposters}"]`)?.classList.add('active');
-        }
-    }
+// Counter functionality
+function updatePlayerCount(change) {
+    const current = parseInt(elements.numPlayers.value);
+    const newCount = Math.max(3, Math.min(10, current + change));
     
-    // Handle imposter quick select buttons
-    if (e.target.hasAttribute('data-imposters')) {
-        const imposterCount = parseInt(e.target.getAttribute('data-imposters'));
-        const playerCount = parseInt(elements.numPlayers.value);
-        
-        if (imposterCount < playerCount) {
-            elements.numImposters.value = imposterCount;
-            gameState.numImposters = imposterCount;
-            
-            // Update active state
-            document.querySelectorAll('[data-imposters]').forEach(btn => btn.classList.remove('active'));
-            e.target.classList.add('active');
-        }
+    elements.numPlayers.value = newCount;
+    elements.playersDisplay.textContent = newCount;
+    gameState.numPlayers = newCount;
+    
+    // Validate imposters count
+    const currentImposters = parseInt(elements.numImposters.value);
+    if (currentImposters >= newCount) {
+        const maxImposters = Math.max(1, newCount - 1);
+        elements.numImposters.value = maxImposters;
+        elements.impostersDisplay.textContent = maxImposters;
+        gameState.numImposters = maxImposters;
     }
-});
+}
+
+function updateImposterCount(change) {
+    const current = parseInt(elements.numImposters.value);
+    const playerCount = parseInt(elements.numPlayers.value);
+    const maxImposters = Math.max(1, playerCount - 1);
+    const newCount = Math.max(1, Math.min(maxImposters, current + change));
+    
+    elements.numImposters.value = newCount;
+    elements.impostersDisplay.textContent = newCount;
+    gameState.numImposters = newCount;
+}
+
+// Counter event listeners
+elements.playersMinus.addEventListener('click', () => updatePlayerCount(-1));
+elements.playersPlus.addEventListener('click', () => updatePlayerCount(1));
+elements.impostersMinus.addEventListener('click', () => updateImposterCount(-1));
+elements.impostersPlus.addEventListener('click', () => updateImposterCount(1));
 
 // Initialize the app
 document.addEventListener('DOMContentLoaded', () => {
     showScreen('home');
     updateWinsDisplay();
     
-    // Set initial active states for quick select buttons
-    document.querySelector('[data-players="4"]')?.classList.add('active');
-    document.querySelector('[data-imposters="1"]')?.classList.add('active');
+    // Initialize counter displays
+    elements.playersDisplay.textContent = gameState.numPlayers;
+    elements.impostersDisplay.textContent = gameState.numImposters;
 });
