@@ -1,12 +1,14 @@
-// Game state - v2.0 with categories
+// Game state - v2.0 with categories and improvements
 let gameState = {
     numPlayers: 4,
     numImposters: 1,
     currentPlayer: 1,
     word: '',
     category: '',
+    selectedCategory: 'random',
     imposters: [],
-    players: []
+    players: [],
+    imposterWins: 0
 };
 
 // Word categories with their words
@@ -126,6 +128,8 @@ const screens = {
     setup: document.getElementById('setup-screen'),
     player: document.getElementById('player-screen'),
     play: document.getElementById('play-screen'),
+    voting: document.getElementById('voting-screen'),
+    playAgain: document.getElementById('play-again-screen'),
     complete: document.getElementById('complete-screen')
 };
 
@@ -133,6 +137,7 @@ const elements = {
     startGame: document.getElementById('start-game'),
     numPlayers: document.getElementById('num-players'),
     numImposters: document.getElementById('num-imposters'),
+    categorySelect: document.getElementById('category-select'),
     beginGame: document.getElementById('begin-game'),
     backToHome: document.getElementById('back-to-home'),
     playerTitle: document.getElementById('player-title'),
@@ -140,11 +145,21 @@ const elements = {
     viewRole: document.getElementById('view-role'),
     roleReveal: document.getElementById('role-reveal'),
     roleDisplay: document.getElementById('role-display'),
+    categoryDisplay: document.getElementById('category-display'),
+    tapToReveal: document.getElementById('tap-to-reveal'),
     nextPlayer: document.getElementById('next-player'),
+    startDiscussion: document.getElementById('start-discussion'),
+    impostersWon: document.getElementById('imposters-won'),
+    impostersFound: document.getElementById('imposters-found'),
+    categorySelectAgain: document.getElementById('category-select-again'),
+    startNewRound: document.getElementById('start-new-round'),
+    newGameSetup: document.getElementById('new-game-setup'),
+    winsCount: document.getElementById('wins-count'),
+    winsCountVoting: document.getElementById('wins-count-voting'),
+    winsCountAgain: document.getElementById('wins-count-again'),
     gameWord: document.getElementById('game-word'),
     gamePlayers: document.getElementById('game-players'),
     gameImposters: document.getElementById('game-imposters'),
-    startDiscussion: document.getElementById('start-discussion'),
     newGame: document.getElementById('new-game'),
     backToGame: document.getElementById('back-to-game')
 };
@@ -155,8 +170,13 @@ function showScreen(screenName) {
     screens[screenName].classList.add('active');
 }
 
-function getRandomWord() {
-    return WORD_LIST[Math.floor(Math.random() * WORD_LIST.length)];
+function getRandomWord(selectedCategory = 'random') {
+    if (selectedCategory === 'random') {
+        return WORD_LIST[Math.floor(Math.random() * WORD_LIST.length)];
+    } else {
+        const categoryWords = WORD_CATEGORIES[selectedCategory];
+        return categoryWords[Math.floor(Math.random() * categoryWords.length)];
+    }
 }
 
 function getWordCategory(word) {
@@ -182,8 +202,9 @@ function selectImposters(numPlayers, numImposters) {
 function initializeGame() {
     gameState.numPlayers = parseInt(elements.numPlayers.value);
     gameState.numImposters = parseInt(elements.numImposters.value);
+    gameState.selectedCategory = elements.categorySelect.value;
     gameState.currentPlayer = 1;
-    gameState.word = getRandomWord();
+    gameState.word = getRandomWord(gameState.selectedCategory);
     gameState.category = getWordCategory(gameState.word);
     gameState.imposters = selectImposters(gameState.numPlayers, gameState.numImposters);
     gameState.players = [];
@@ -194,6 +215,7 @@ function initializeGame() {
         return false;
     }
     
+    updateWinsDisplay();
     return true;
 }
 
@@ -210,23 +232,25 @@ function showPlayerRole() {
     
     const isImposter = gameState.imposters.includes(gameState.currentPlayer);
     
+    // Set up the role display (word only, no category)
     if (isImposter) {
-        elements.roleDisplay.innerHTML = `
-            <div style="font-size: 1.8rem; font-weight: 700; color: #e53e3e; margin-bottom: 10px;">IMPOSTER</div>
-            <div style="font-size: 1.2rem; color: #666; font-weight: 500;">Category: ${gameState.category}</div>
-        `;
+        elements.roleDisplay.textContent = 'IMPOSTER';
         elements.roleDisplay.className = 'imposter';
     } else {
-        elements.roleDisplay.innerHTML = `
-            <div style="font-size: 1.8rem; font-weight: 700; color: #38a169; margin-bottom: 10px;">${gameState.word}</div>
-            <div style="font-size: 1.2rem; color: #666; font-weight: 500;">Category: ${gameState.category}</div>
-        `;
+        elements.roleDisplay.textContent = gameState.word;
         elements.roleDisplay.className = 'word';
     }
     
+    // Set category display (separate from role display)
+    elements.categoryDisplay.textContent = `Category: ${gameState.category}`;
+    
+    // Show blur overlay and disable next button
+    elements.tapToReveal.style.display = 'flex';
+    elements.nextPlayer.classList.add('disabled');
+    
     // Update next player button text
     if (gameState.currentPlayer === gameState.numPlayers) {
-        elements.nextPlayer.textContent = 'Show Results';
+        elements.nextPlayer.textContent = 'Continue';
     } else {
         elements.nextPlayer.textContent = 'Next Player';
     }
@@ -242,7 +266,51 @@ function nextPlayer() {
 }
 
 function showPlayScreen() {
+    updateWinsDisplay();
     showScreen('play');
+}
+
+function showVotingScreen() {
+    updateWinsDisplay();
+    showScreen('voting');
+}
+
+function showPlayAgainScreen() {
+    updateWinsDisplay();
+    // Copy current category selection
+    elements.categorySelectAgain.value = gameState.selectedCategory;
+    showScreen('playAgain');
+}
+
+function updateWinsDisplay() {
+    if (elements.winsCount) elements.winsCount.textContent = gameState.imposterWins;
+    if (elements.winsCountVoting) elements.winsCountVoting.textContent = gameState.imposterWins;
+    if (elements.winsCountAgain) elements.winsCountAgain.textContent = gameState.imposterWins;
+}
+
+function handleTapToReveal() {
+    elements.tapToReveal.style.display = 'none';
+    elements.nextPlayer.classList.remove('disabled');
+}
+
+function impostersWon() {
+    gameState.imposterWins++;
+    showPlayAgainScreen();
+}
+
+function impostersFound() {
+    // No increment for imposter wins
+    showPlayAgainScreen();
+}
+
+function startNewRound() {
+    // Use the selected category from the play again screen
+    gameState.selectedCategory = elements.categorySelectAgain.value;
+    gameState.currentPlayer = 1;
+    gameState.word = getRandomWord(gameState.selectedCategory);
+    gameState.category = getWordCategory(gameState.word);
+    gameState.imposters = selectImposters(gameState.numPlayers, gameState.numImposters);
+    showPlayerScreen();
 }
 
 function showGameComplete() {
@@ -259,11 +327,15 @@ function resetGame() {
         currentPlayer: 1,
         word: '',
         category: '',
+        selectedCategory: 'random',
         imposters: [],
-        players: []
+        players: [],
+        imposterWins: 0
     };
     elements.numPlayers.value = 4;
     elements.numImposters.value = 1;
+    elements.categorySelect.value = 'random';
+    updateWinsDisplay();
     showScreen('home');
 }
 
@@ -291,7 +363,30 @@ elements.nextPlayer.addEventListener('click', () => {
 });
 
 elements.startDiscussion.addEventListener('click', () => {
-    showGameComplete();
+    showVotingScreen();
+});
+
+// Voting screen event listeners
+elements.impostersWon.addEventListener('click', () => {
+    impostersWon();
+});
+
+elements.impostersFound.addEventListener('click', () => {
+    impostersFound();
+});
+
+// Play again screen event listeners
+elements.startNewRound.addEventListener('click', () => {
+    startNewRound();
+});
+
+elements.newGameSetup.addEventListener('click', () => {
+    resetGame();
+});
+
+// Tap to reveal functionality
+elements.tapToReveal.addEventListener('click', () => {
+    handleTapToReveal();
 });
 
 elements.newGame.addEventListener('click', () => {
@@ -321,7 +416,52 @@ elements.numImposters.addEventListener('input', () => {
     }
 });
 
+// Quick select button functionality
+document.addEventListener('click', (e) => {
+    // Handle player quick select buttons
+    if (e.target.hasAttribute('data-players')) {
+        const playerCount = parseInt(e.target.getAttribute('data-players'));
+        elements.numPlayers.value = playerCount;
+        gameState.numPlayers = playerCount;
+        
+        // Update active state
+        document.querySelectorAll('[data-players]').forEach(btn => btn.classList.remove('active'));
+        e.target.classList.add('active');
+        
+        // Validate imposters count
+        if (gameState.numImposters >= playerCount) {
+            const newImposters = Math.max(1, playerCount - 1);
+            elements.numImposters.value = newImposters;
+            gameState.numImposters = newImposters;
+            
+            // Update imposter button active state
+            document.querySelectorAll('[data-imposters]').forEach(btn => btn.classList.remove('active'));
+            document.querySelector(`[data-imposters="${newImposters}"]`)?.classList.add('active');
+        }
+    }
+    
+    // Handle imposter quick select buttons
+    if (e.target.hasAttribute('data-imposters')) {
+        const imposterCount = parseInt(e.target.getAttribute('data-imposters'));
+        const playerCount = parseInt(elements.numPlayers.value);
+        
+        if (imposterCount < playerCount) {
+            elements.numImposters.value = imposterCount;
+            gameState.numImposters = imposterCount;
+            
+            // Update active state
+            document.querySelectorAll('[data-imposters]').forEach(btn => btn.classList.remove('active'));
+            e.target.classList.add('active');
+        }
+    }
+});
+
 // Initialize the app
 document.addEventListener('DOMContentLoaded', () => {
     showScreen('home');
+    updateWinsDisplay();
+    
+    // Set initial active states for quick select buttons
+    document.querySelector('[data-players="4"]')?.classList.add('active');
+    document.querySelector('[data-imposters="1"]')?.classList.add('active');
 });
