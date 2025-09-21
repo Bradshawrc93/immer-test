@@ -1,4 +1,4 @@
-// Game state - v2.0 with categories and improvements
+// Game state - v2.7 with simplified voting rules
 let gameState = {
     numPlayers: 4,
     numImposters: 1,
@@ -8,7 +8,11 @@ let gameState = {
     selectedCategory: 'random',
     imposters: [],
     players: [],
-    imposterWins: 0
+    imposterWins: 0,
+    currentRound: 1,
+    maxRounds: 2,
+    playersEliminated: 0,
+    impostersEliminated: 0
 };
 
 // Word categories with their words
@@ -130,6 +134,8 @@ const screens = {
     player: document.getElementById('player-screen'),
     play: document.getElementById('play-screen'),
     voting: document.getElementById('voting-screen'),
+    elimination: document.getElementById('elimination-screen'),
+    wordGuess: document.getElementById('word-guess-screen'),
     playAgain: document.getElementById('play-again-screen'),
     complete: document.getElementById('complete-screen')
 };
@@ -158,8 +164,23 @@ const elements = {
     tapToReveal: document.getElementById('tap-to-reveal'),
     nextPlayer: document.getElementById('next-player'),
     startDiscussion: document.getElementById('start-discussion'),
-    impostersWon: document.getElementById('imposters-won'),
-    impostersFound: document.getElementById('imposters-found'),
+    // Voting elements
+    currentRoundSpan: document.getElementById('current-round'),
+    voteType: document.getElementById('vote-type'),
+    noVoteAction: document.getElementById('no-vote-action'),
+    voteSuccessful: document.getElementById('vote-successful'),
+    voteFailed: document.getElementById('vote-failed'),
+    // Elimination elements
+    imposterEliminated: document.getElementById('imposter-eliminated'),
+    playerEliminated: document.getElementById('player-eliminated'),
+    // Word guessing elements
+    revealWord: document.getElementById('reveal-word'),
+    revealCategory: document.getElementById('reveal-category'),
+    guessCorrect: document.getElementById('guess-correct'),
+    guessWrong: document.getElementById('guess-wrong'),
+    // Wins counters
+    winsCountElimination: document.getElementById('wins-count-elimination'),
+    winsCountGuess: document.getElementById('wins-count-guess'),
     categorySelectAgain: document.getElementById('category-select-again'),
     startNewRound: document.getElementById('start-new-round'),
     newGameSetup: document.getElementById('new-game-setup'),
@@ -284,7 +305,92 @@ function showPlayScreen() {
 
 function showVotingScreen() {
     updateWinsDisplay();
+    setupVotingScreen();
     showScreen('voting');
+}
+
+function setupVotingScreen() {
+    // Update round number
+    elements.currentRoundSpan.textContent = gameState.currentRound;
+    
+    // Simplified rules: Always majority vote
+    elements.voteType.textContent = 'majority';
+    
+    // Set no-vote action
+    if (gameState.currentRound >= gameState.maxRounds) {
+        elements.noVoteAction.textContent = 'Imposters Win';
+    } else {
+        elements.noVoteAction.textContent = 'Next Round';
+    }
+}
+
+function handleVoteSuccess() {
+    // Someone was eliminated, go to elimination screen
+    showScreen('elimination');
+    updateWinsDisplay();
+}
+
+function handleVoteFail() {
+    // No elimination - check what happens next
+    if (gameState.currentRound >= gameState.maxRounds) {
+        // Max rounds reached = imposters win
+        impostersWinGame();
+    } else {
+        // Go to next round
+        gameState.currentRound++;
+        showPlayScreen(); // Back to discussion for next round
+    }
+}
+
+function handleImposterEliminated() {
+    gameState.impostersEliminated++;
+    
+    // Show word guessing screen
+    elements.revealWord.textContent = gameState.word;
+    elements.revealCategory.textContent = gameState.category;
+    updateWinsDisplay();
+    showScreen('wordGuess');
+}
+
+function handlePlayerEliminated() {
+    gameState.playersEliminated++;
+    
+    // Check if imposters now equal or outnumber players
+    const remainingPlayers = gameState.numPlayers - gameState.playersEliminated - gameState.impostersEliminated;
+    const remainingImposters = gameState.numImposters - gameState.impostersEliminated;
+    
+    if (remainingImposters >= remainingPlayers) {
+        // Imposters win by numbers
+        impostersWinGame();
+    } else if (gameState.currentRound >= gameState.maxRounds) {
+        // Max rounds reached, player eliminated = imposters win
+        impostersWinGame();
+    } else {
+        // Continue to next round
+        gameState.currentRound++;
+        showPlayScreen();
+    }
+}
+
+function handleCorrectGuess() {
+    // Imposter guessed correctly = imposters win
+    impostersWinGame();
+}
+
+function handleWrongGuess() {
+    // Simplified: If any imposter is eliminated and guesses wrong, players win
+    // (In multiple imposter games, all imposters would have guessed by now)
+    playersWinGame();
+}
+
+function impostersWinGame() {
+    gameState.imposterWins++;
+    showPlayAgainScreen();
+}
+
+function playersWinGame() {
+    // Players win, don't increment imposter wins
+    showPlayAgainScreen();
 }
 
 function showPlayAgainScreen() {
@@ -297,6 +403,8 @@ function showPlayAgainScreen() {
 function updateWinsDisplay() {
     if (elements.winsCount) elements.winsCount.textContent = gameState.imposterWins;
     if (elements.winsCountVoting) elements.winsCountVoting.textContent = gameState.imposterWins;
+    if (elements.winsCountElimination) elements.winsCountElimination.textContent = gameState.imposterWins;
+    if (elements.winsCountGuess) elements.winsCountGuess.textContent = gameState.imposterWins;
     if (elements.winsCountAgain) elements.winsCountAgain.textContent = gameState.imposterWins;
 }
 
@@ -325,6 +433,9 @@ function startNewRound() {
     // Use the selected category from the play again screen
     gameState.selectedCategory = elements.categorySelectAgain.value;
     gameState.currentPlayer = 1;
+    gameState.currentRound = 1;
+    gameState.playersEliminated = 0;
+    gameState.impostersEliminated = 0;
     gameState.word = getRandomWord(gameState.selectedCategory);
     gameState.category = getWordCategory(gameState.word);
     gameState.imposters = selectImposters(gameState.numPlayers, gameState.numImposters);
@@ -348,7 +459,11 @@ function resetGame() {
         selectedCategory: 'random',
         imposters: [],
         players: [],
-        imposterWins: 0
+        imposterWins: 0,
+        currentRound: 1,
+        maxRounds: 2,
+        playersEliminated: 0,
+        impostersEliminated: 0
     };
     elements.numPlayers.value = 4;
     elements.numImposters.value = 1;
@@ -393,12 +508,30 @@ elements.startDiscussion.addEventListener('click', () => {
 });
 
 // Voting screen event listeners
-elements.impostersWon.addEventListener('click', () => {
-    impostersWon();
+elements.voteSuccessful.addEventListener('click', () => {
+    handleVoteSuccess();
 });
 
-elements.impostersFound.addEventListener('click', () => {
-    impostersFound();
+elements.voteFailed.addEventListener('click', () => {
+    handleVoteFail();
+});
+
+// Elimination screen event listeners
+elements.imposterEliminated.addEventListener('click', () => {
+    handleImposterEliminated();
+});
+
+elements.playerEliminated.addEventListener('click', () => {
+    handlePlayerEliminated();
+});
+
+// Word guessing screen event listeners
+elements.guessCorrect.addEventListener('click', () => {
+    handleCorrectGuess();
+});
+
+elements.guessWrong.addEventListener('click', () => {
+    handleWrongGuess();
 });
 
 // Play again screen event listeners
