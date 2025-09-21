@@ -308,6 +308,24 @@ function nextPlayer() {
 
 function showPlayScreen() {
     updateWinsDisplay();
+    
+    // Update the play screen content based on round
+    const playScreenTitle = document.querySelector('#play-screen h2');
+    const playScreenInstructions = document.querySelector('#play-screen .instructions');
+    const startButton = elements.startDiscussion;
+    
+    if (gameState.currentRound === 1) {
+        // First round - initial setup
+        playScreenTitle.textContent = 'Ready to Play!';
+        playScreenInstructions.innerHTML = 'All players have viewed their roles.<br>Now discuss and try to identify the imposters!';
+        startButton.textContent = 'Start Discussion';
+    } else {
+        // Subsequent rounds
+        playScreenTitle.textContent = `Round ${gameState.currentRound}`;
+        playScreenInstructions.innerHTML = 'Go around again! Give another clue word.<br>After completing this round, proceed to vote.';
+        startButton.textContent = 'Start Round ' + gameState.currentRound;
+    }
+    
     showScreen('play');
 }
 
