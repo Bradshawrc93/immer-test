@@ -183,6 +183,7 @@ const elements = {
     winsCountGuess: document.getElementById('wins-count-guess'),
     categorySelectAgain: document.getElementById('category-select-again'),
     startNewRound: document.getElementById('start-new-round'),
+    showInstructionsAgain: document.getElementById('show-instructions-again'),
     newGameSetup: document.getElementById('new-game-setup'),
     winsCount: document.getElementById('wins-count'),
     winsCountVoting: document.getElementById('wins-count-voting'),
@@ -220,12 +221,19 @@ function getWordCategory(word) {
 
 function selectImposters(numPlayers, numImposters) {
     const imposters = [];
-    while (imposters.length < numImposters) {
-        const randomPlayer = Math.floor(Math.random() * numPlayers) + 1;
-        if (!imposters.includes(randomPlayer)) {
-            imposters.push(randomPlayer);
-        }
+    // Player 1 is never an imposter (they manage the device)
+    const availablePlayers = [];
+    for (let i = 2; i <= numPlayers; i++) {
+        availablePlayers.push(i);
     }
+    
+    while (imposters.length < numImposters && availablePlayers.length > 0) {
+        const randomIndex = Math.floor(Math.random() * availablePlayers.length);
+        const selectedPlayer = availablePlayers[randomIndex];
+        imposters.push(selectedPlayer);
+        availablePlayers.splice(randomIndex, 1);
+    }
+    
     return imposters.sort((a, b) => a - b);
 }
 
@@ -239,9 +247,9 @@ function initializeGame() {
     gameState.imposters = selectImposters(gameState.numPlayers, gameState.numImposters);
     gameState.players = [];
     
-    // Validate inputs
-    if (gameState.numImposters >= gameState.numPlayers) {
-        alert('Number of imposters must be less than number of players!');
+    // Validate inputs (Player 1 excluded from being imposter)
+    if (gameState.numImposters >= gameState.numPlayers - 1) {
+        alert('Too many imposters! Player 1 cannot be an imposter, and you need at least one regular player.');
         return false;
     }
     
@@ -539,6 +547,10 @@ elements.startNewRound.addEventListener('click', () => {
     startNewRound();
 });
 
+elements.showInstructionsAgain.addEventListener('click', () => {
+    showScreen('instructions');
+});
+
 elements.newGameSetup.addEventListener('click', () => {
     resetGame();
 });
@@ -584,10 +596,10 @@ function updatePlayerCount(change) {
     elements.playersDisplay.textContent = newCount;
     gameState.numPlayers = newCount;
     
-    // Validate imposters count
+    // Validate imposters count (Player 1 excluded + need at least 1 regular player)
     const currentImposters = parseInt(elements.numImposters.value);
-    if (currentImposters >= newCount) {
-        const maxImposters = Math.max(1, newCount - 1);
+    const maxImposters = Math.max(1, newCount - 2);
+    if (currentImposters > maxImposters) {
         elements.numImposters.value = maxImposters;
         elements.impostersDisplay.textContent = maxImposters;
         gameState.numImposters = maxImposters;
@@ -597,7 +609,8 @@ function updatePlayerCount(change) {
 function updateImposterCount(change) {
     const current = parseInt(elements.numImposters.value);
     const playerCount = parseInt(elements.numPlayers.value);
-    const maxImposters = Math.max(1, playerCount - 1);
+    // Max imposters = players - 2 (exclude Player 1 + need at least 1 regular player)
+    const maxImposters = Math.max(1, playerCount - 2);
     const newCount = Math.max(1, Math.min(maxImposters, current + change));
     
     elements.numImposters.value = newCount;
