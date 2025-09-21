@@ -236,6 +236,9 @@ function showPlayerRole() {
     elements.playerReady.style.display = 'none';
     elements.roleReveal.classList.remove('hidden');
     
+    // Update title to show current player (not "Pass to")
+    elements.playerTitle.textContent = `Player ${gameState.currentPlayer}`;
+    
     const isImposter = gameState.imposters.includes(gameState.currentPlayer);
     
     // Prepare the role display content but keep it hidden
