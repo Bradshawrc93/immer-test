@@ -13,6 +13,40 @@
             <h1>🎭 Imposter Word Game</h1>
             <p class="subtitle">Can you spot the imposters?</p>
             <button id="start-game" class="btn btn-primary">Start New Game</button>
+            <button id="show-instructions" class="btn btn-secondary">Instructions</button>
+        </div>
+
+        <!-- Instructions Screen -->
+        <div id="instructions-screen" class="screen">
+            <h2>📋 How to Play</h2>
+            <div class="instructions-content">
+                <div class="instruction-step">
+                    <h3>🎯 Objective</h3>
+                    <p>Most players get the same word. Imposters get "IMPOSTER" instead. Everyone discusses to find the imposters!</p>
+                </div>
+                
+                <div class="instruction-step">
+                    <h3>🎮 Game Setup</h3>
+                    <p>• Choose 3-10 players<br>
+                    • Select 1-5 imposters<br>
+                    • Pick a category or go random</p>
+                </div>
+                
+                <div class="instruction-step">
+                    <h3>📱 Playing</h3>
+                    <p>1. Pass phone to each player<br>
+                    2. Each player taps "View" then taps to reveal their role<br>
+                    3. Players see either the <strong>word</strong> or <strong>"IMPOSTER"</strong><br>
+                    4. Everyone discusses and tries to identify imposters</p>
+                </div>
+                
+                <div class="instruction-step">
+                    <h3>🏆 Winning</h3>
+                    <p><strong>Regular Players:</strong> Find all the imposters<br>
+                    <strong>Imposters:</strong> Avoid being caught by blending in</p>
+                </div>
+            </div>
+            <button id="back-to-home-from-instructions" class="btn btn-primary">Got It!</button>
         </div>
 
         <!-- Setup Screen -->
@@ -144,6 +178,6 @@
         </div>
     </div>
 
-    <script src="script.js?v=2.3"></script>
+    <script src="script.js?v=2.5"></script>
 </body>
 </html>
