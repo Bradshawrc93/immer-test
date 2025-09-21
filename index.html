@@ -56,13 +56,13 @@
                 
                 <div class="instruction-step">
                     <h3>👥 Multiple Imposters</h3>
-                    <p><strong>If Imposter voted out:</strong> Gets 1 guess at secret word<br>
-                    • Correct guess = All Imposters win<br>
-                    • Wrong guess = Game continues<br><br>
+                    <p><strong>If Imposter voted out:</strong> ALL remaining imposters take turns guessing<br>
+                    • Any correct guess = All Imposters win<br>
+                    • All wrong guesses = Players win<br><br>
                     <strong>Game ends when:</strong><br>
-                    • All imposters found = Players win<br>
-                    • Imposters ≥ half of players = Imposters win<br>
-                    • After 3 rounds max = Imposters win if not all found</p>
+                    • Any imposter found and guesses wrong = Players win<br>
+                    • No elimination after 2 rounds = Imposters win<br>
+                    • Imposters ≥ half of players = Imposters win</p>
                 </div>
             </div>
             <button id="back-to-home-from-instructions" class="btn btn-primary">Got It!</button>
@@ -143,15 +143,43 @@
             <button id="start-discussion" class="btn btn-primary">Start Discussion</button>
         </div>
 
-        <!-- Voting Screen -->
+        <!-- Initial Voting Screen -->
         <div id="voting-screen" class="screen">
             <div id="imposter-wins-counter-voting">
                 <p class="wins-display">Imposter Wins: <span id="wins-count-voting">0</span></p>
             </div>
-            <h2>Vote Results</h2>
-            <p class="instructions">Who won this round?</p>
-            <button id="imposters-won" class="btn btn-primary">Imposters Won</button>
-            <button id="imposters-found" class="btn btn-secondary">Imposters Were Found</button>
+            <h2>🗳️ Round <span id="current-round">1</span> Voting</h2>
+            <p class="instructions">Did you reach a <span id="vote-type">unanimous</span> vote?</p>
+            <button id="vote-successful" class="btn btn-primary">Yes - Someone Eliminated</button>
+            <button id="vote-failed" class="btn btn-secondary">No - <span id="no-vote-action">Next Round</span></button>
+        </div>
+
+        <!-- Player Elimination Screen -->
+        <div id="elimination-screen" class="screen">
+            <div id="imposter-wins-counter-elimination">
+                <p class="wins-display">Imposter Wins: <span id="wins-count-elimination">0</span></p>
+            </div>
+            <h2>👤 Player Eliminated</h2>
+            <p class="instructions">What was the eliminated player's role?</p>
+            <button id="imposter-eliminated" class="btn btn-primary">IMPOSTER</button>
+            <button id="player-eliminated" class="btn btn-secondary">Regular Player</button>
+        </div>
+
+        <!-- Word Guessing Screen -->
+        <div id="word-guess-screen" class="screen">
+            <div id="imposter-wins-counter-guess">
+                <p class="wins-display">Imposter Wins: <span id="wins-count-guess">0</span></p>
+            </div>
+            <h2>🎯 Imposter's Final Guess</h2>
+            <p class="instructions">The eliminated imposter will now guess the secret word.</p>
+            <p class="instructions"><strong>Pass phone to a regular player</strong> to judge the guess.</p>
+            <div class="game-info">
+                <p><strong>Secret word was:</strong> <span id="reveal-word"></span></p>
+                <p><strong>Category:</strong> <span id="reveal-category"></span></p>
+            </div>
+            <p class="instructions">Did the imposter guess correctly?</p>
+            <button id="guess-correct" class="btn btn-primary">Correct - Imposters Win</button>
+            <button id="guess-wrong" class="btn btn-secondary">Wrong - <span id="guess-result-text">Players Win</span></button>
         </div>
 
         <!-- Play Again Screen -->
@@ -197,6 +225,6 @@
         </div>
     </div>
 
-    <script src="script.js?v=2.6"></script>
+    <script src="script.js?v=2.7"></script>
 </body>
 </html>
