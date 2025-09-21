@@ -21,29 +21,48 @@
             <h2>📋 How to Play</h2>
             <div class="instructions-content">
                 <div class="instruction-step">
-                    <h3>🎯 Objective</h3>
-                    <p>Most players get the same word. Imposters get "IMPOSTER" instead. Everyone discusses to find the imposters!</p>
-                </div>
-                
-                <div class="instruction-step">
-                    <h3>🎮 Game Setup</h3>
+                    <h3>🎯 Setup</h3>
                     <p>• Choose 3-10 players<br>
                     • Select 1-5 imposters<br>
-                    • Pick a category or go random</p>
+                    • Pick a category or go random<br>
+                    • Most players get the <strong>secret word</strong>, imposters get <strong>"IMPOSTER"</strong></p>
                 </div>
                 
                 <div class="instruction-step">
-                    <h3>📱 Playing</h3>
-                    <p>1. Pass phone to each player<br>
-                    2. Each player taps "View" then taps to reveal their role<br>
-                    3. Players see either the <strong>word</strong> or <strong>"IMPOSTER"</strong><br>
-                    4. Everyone discusses and tries to identify imposters</p>
+                    <h3>🎮 Giving Clues</h3>
+                    <p>Each player says <strong>1 word</strong> associated with the secret word:<br>
+                    • <strong>Cryptic enough</strong> that imposters can't figure it out<br>
+                    • <strong>Clear enough</strong> that other players know you have the real word<br>
+                    • Imposters must bluff based on the category and other clues</p>
                 </div>
                 
                 <div class="instruction-step">
-                    <h3>🏆 Winning</h3>
-                    <p><strong>Regular Players:</strong> Find all the imposters<br>
-                    <strong>Imposters:</strong> Avoid being caught by blending in</p>
+                    <h3>🗳️ Voting Phase</h3>
+                    <p>After all clues are given:<br>
+                    • Vote for who you think is an imposter<br>
+                    • <strong>Majority vote</strong> eliminates that player<br>
+                    • Voted-out player reveals if they were Player or Imposter</p>
+                </div>
+                
+                <div class="instruction-step">
+                    <h3>🎯 Single Imposter</h3>
+                    <p><strong>If Imposter voted out:</strong> Gets 1 guess at secret word<br>
+                    • Correct guess = Imposter wins<br>
+                    • Wrong guess = Players win<br><br>
+                    <strong>If Player voted out:</strong> Second round of clues<br>
+                    • Find imposter = Players win<br>
+                    • Vote out another player = Imposter wins</p>
+                </div>
+                
+                <div class="instruction-step">
+                    <h3>👥 Multiple Imposters</h3>
+                    <p><strong>If Imposter voted out:</strong> Gets 1 guess at secret word<br>
+                    • Correct guess = All Imposters win<br>
+                    • Wrong guess = Game continues<br><br>
+                    <strong>Game ends when:</strong><br>
+                    • All imposters found = Players win<br>
+                    • Imposters ≥ half of players = Imposters win<br>
+                    • After 3 rounds max = Imposters win if not all found</p>
                 </div>
             </div>
             <button id="back-to-home-from-instructions" class="btn btn-primary">Got It!</button>
@@ -178,6 +197,6 @@
         </div>
     </div>
 
-    <script src="script.js?v=2.5"></script>
+    <script src="script.js?v=2.6"></script>
 </body>
 </html>
