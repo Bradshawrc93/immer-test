@@ -371,9 +371,7 @@ function handleVoteFail() {
 function handleImposterEliminated() {
     gameState.impostersEliminated++;
     
-    // Show word guessing screen
-    elements.revealWord.textContent = gameState.word;
-    elements.revealCategory.textContent = gameState.category;
+    // Show word guessing screen (without revealing the word)
     updateWinsDisplay();
     showScreen('wordGuess');
 }
