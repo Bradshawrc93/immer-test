@@ -110,17 +110,6 @@ const WORD_CATEGORIES = {
         'Psychologist', 'Therapist', 'Counselor', 'Librarian', 'Historian', 'Archaeologist',
         'Astronaut', 'Explorer', 'Detective', 'Judge', 'Mayor', 'President', 'Ambassador'
     ],
-    'Miscellaneous': [
-        'Adventure', 'Mystery', 'Secret', 'Surprise', 'Magic', 'Miracle', 'Legend', 'Myth',
-        'Story', 'Tale', 'Fable', 'Epic', 'Saga', 'Chronicle', 'History', 'Memory',
-        'Dream', 'Nightmare', 'Fantasy', 'Reality', 'Imagination', 'Creativity', 'Innovation',
-        'Discovery', 'Invention', 'Revolution', 'Evolution', 'Progress', 'Development', 'Growth',
-        'Change', 'Transformation', 'Metamorphosis', 'Rebirth', 'Renewal', 'Revival', 'Resurrection',
-        'Beginning', 'End', 'Start', 'Finish', 'Journey', 'Destination', 'Path', 'Road',
-        'Bridge', 'Door', 'Window', 'Gate', 'Portal', 'Entrance', 'Exit', 'Passage',
-        'Tunnel', 'Cave', 'Cavern', 'Grotto', 'Chamber', 'Room', 'Hall', 'Corridor',
-        'Staircase', 'Elevator', 'Escalator', 'Balcony', 'Terrace', 'Patio', 'Deck', 'Porch'
-    ]
 };
 
 // Flatten all words into a single array for random selection
@@ -216,7 +205,7 @@ function getWordCategory(word) {
             return category;
         }
     }
-    return 'Miscellaneous'; // fallback
+    return 'Objects & Tools'; // fallback
 }
 
 function selectImposters(numPlayers, numImposters) {
