@@ -125,6 +125,7 @@ const WORD_LIST = Object.values(WORD_CATEGORIES).flat();
 // DOM elements
 const screens = {
     home: document.getElementById('home-screen'),
+    instructions: document.getElementById('instructions-screen'),
     setup: document.getElementById('setup-screen'),
     player: document.getElementById('player-screen'),
     play: document.getElementById('play-screen'),
@@ -135,6 +136,8 @@ const screens = {
 
 const elements = {
     startGame: document.getElementById('start-game'),
+    showInstructions: document.getElementById('show-instructions'),
+    backToHomeFromInstructions: document.getElementById('back-to-home-from-instructions'),
     numPlayers: document.getElementById('num-players'),
     numImposters: document.getElementById('num-imposters'),
     playersDisplay: document.getElementById('players-display'),
@@ -357,6 +360,14 @@ function resetGame() {
 // Event listeners
 elements.startGame.addEventListener('click', () => {
     showScreen('setup');
+});
+
+elements.showInstructions.addEventListener('click', () => {
+    showScreen('instructions');
+});
+
+elements.backToHomeFromInstructions.addEventListener('click', () => {
+    showScreen('home');
 });
 
 elements.beginGame.addEventListener('click', () => {
