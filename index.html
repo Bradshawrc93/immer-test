@@ -25,6 +25,7 @@
                     <p>• Choose 3-10 players<br>
                     • Select 1-5 imposters<br>
                     • Pick a category or go random<br>
+                    • <strong>Player 1 is never an imposter</strong> (they manage the device)<br>
                     • Most players get the <strong>secret word</strong>, imposters get <strong>"IMPOSTER"</strong></p>
                 </div>
                 
@@ -207,8 +208,9 @@
                     <option value="Miscellaneous">Miscellaneous</option>
                 </select>
             </div>
-            <p class="instructions">Pass the phone to Player 1</p>
+            <p class="instructions">Pass the phone to Player 1<br><small>(Shift one person counter-clockwise from last round)</small></p>
             <button id="start-new-round" class="btn btn-primary">Start Round</button>
+            <button id="show-instructions-again" class="btn btn-secondary">Instructions</button>
             <button id="new-game-setup" class="btn btn-secondary">New Game</button>
         </div>
 
@@ -225,6 +227,6 @@
         </div>
     </div>
 
-    <script src="script.js?v=2.7"></script>
+    <script src="script.js?v=2.8"></script>
 </body>
 </html>
